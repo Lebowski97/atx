@@ -19,6 +19,7 @@ export const createOrder = mutation({
   args: {
     name: v.string(),
     phoneNumber: v.string(),
+    address: v.string(),
     items: v.string(),
     deliveryType: v.optional(v.string()),
     deliveryTime: v.string(),
@@ -31,6 +32,7 @@ export const createOrder = mutation({
     const orderId = await ctx.db.insert("orders", {
       name: args.name,
       phoneNumber: args.phoneNumber,
+      address: args.address,
       items: args.items,
       deliveryType,
       deliveryTime: args.deliveryTime,
@@ -43,6 +45,7 @@ export const createOrder = mutation({
       orderId,
       name: args.name,
       phoneNumber: args.phoneNumber,
+      address: args.address,
       items: args.items,
       deliveryTime: args.deliveryTime,
       notes: args.notes,

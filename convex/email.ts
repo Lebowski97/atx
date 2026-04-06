@@ -21,6 +21,7 @@ export const sendOrderNotification = internalAction({
     orderId: v.id("orders"),
     name: v.string(),
     phoneNumber: v.string(),
+    address: v.string(),
     items: v.string(),
     deliveryTime: v.string(),
     notes: v.optional(v.string()),
@@ -78,6 +79,10 @@ export const sendOrderNotification = internalAction({
             <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(args.phoneNumber)}</td>
           </tr>
           <tr>
+            <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Delivery Address:</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(args.address)}</td>
+          </tr>
+          <tr>
             <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Items:</td>
             <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(args.items)}</td>
           </tr>
@@ -94,6 +99,7 @@ export const sendOrderNotification = internalAction({
       `Order ID: ${orderIdStr}`,
       `Customer Name: ${args.name}`,
       `Phone Number: ${args.phoneNumber}`,
+      `Delivery Address: ${args.address}`,
       `Items: ${args.items}`,
       ...(args.deliveryTime ? [`Preferred Time: ${args.deliveryTime}`] : []),
       ...(args.notes ? [`Notes: ${args.notes}`] : []),

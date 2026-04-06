@@ -5,6 +5,7 @@ export default defineSchema({
   orders: defineTable({
     name: v.string(),
     phoneNumber: v.string(),
+    address: v.optional(v.string()),
     items: v.string(),
     deliveryType: v.string(),
     deliveryTime: v.string(),

@@ -12,12 +12,14 @@ import { Textarea } from "@/components/ui/textarea";
 interface FormErrors {
   name?: string;
   phoneNumber?: string;
+  address?: string;
   items?: string;
 }
 
 function validateForm(fields: {
   name: string;
   phoneNumber: string;
+  address: string;
   items: string;
 }): FormErrors {
   const errors: FormErrors = {};
@@ -30,6 +32,10 @@ function validateForm(fields: {
     errors.phoneNumber = "Phone number is required.";
   } else if (!/^[\d\s()+-]{7,}$/.test(fields.phoneNumber.trim())) {
     errors.phoneNumber = "Please enter a valid phone number.";
+  }
+
+  if (!fields.address.trim()) {
+    errors.address = "Delivery address is required.";
   }
 
   if (!fields.items.trim()) {
@@ -45,6 +51,7 @@ export default function OrderPage() {
 
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState("");
   const [items, setItems] = useState("");
   const [deliveryTime, setDeliveryTime] = useState("");
   const [notes, setNotes] = useState("");
@@ -55,7 +62,7 @@ export default function OrderPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const formErrors = validateForm({ name, phoneNumber, items });
+    const formErrors = validateForm({ name, phoneNumber, address, items });
     setErrors(formErrors);
 
     if (Object.keys(formErrors).length > 0) {
@@ -68,6 +75,7 @@ export default function OrderPage() {
       await createOrder({
         name: name.trim(),
         phoneNumber: phoneNumber.trim(),
+        address: address.trim(),
         items: items.trim(),
         deliveryType: "delivery",
         deliveryTime: deliveryTime.trim(),
@@ -124,6 +132,24 @@ export default function OrderPage() {
                 <p className="text-sm text-destructive">
                   {errors.phoneNumber}
                 </p>
+              )}
+            </div>
+
+            {/* Address */}
+            <div className="space-y-2">
+              <Label htmlFor="address" className="text-muted-foreground">
+                Delivery address <span className="text-destructive">*</span>
+              </Label>
+              <Textarea
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Street, city, ZIP"
+                rows={3}
+                className={errors.address ? "border-destructive" : ""}
+              />
+              {errors.address && (
+                <p className="text-sm text-destructive">{errors.address}</p>
               )}
             </div>
 
