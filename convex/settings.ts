@@ -12,6 +12,18 @@ export const get = query({
   },
 });
 
+export const validatePasscode = query({
+  args: { passcode: v.string() },
+  handler: async (ctx, args) => {
+    const setting = await ctx.db
+      .query("settings")
+      .withIndex("by_key", (q) => q.eq("key", "passcode"))
+      .unique();
+    if (!setting) return false;
+    return setting.value === args.passcode;
+  },
+});
+
 export const set = mutation({
   args: { key: v.string(), value: v.string() },
   handler: async (ctx, args) => {
