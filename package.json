@@ -9,5 +9,8 @@
   "devDependencies": {
     "turbo": "^2"
   },
-  "packageManager": "pnpm@10.7.0"
+  "packageManager": "pnpm@10.7.0",
+  "dependencies": {
+    "convex": "^1.34.1"
+  }
 }
