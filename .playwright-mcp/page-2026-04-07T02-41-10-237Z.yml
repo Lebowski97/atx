@@ -1,0 +1,30 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - heading "Tiny Trees HQ" [level=1] [ref=e6]
+          - paragraph [ref=e7]: Order management
+        - generic [ref=e8]:
+          - generic [ref=e9]:
+            - generic [ref=e10]: "0"
+            - generic [ref=e11]: Today
+          - generic [ref=e12]:
+            - generic [ref=e13]: "0"
+            - generic [ref=e14]: Pending
+      - generic [ref=e15]:
+        - link "Settings" [ref=e16] [cursor=pointer]:
+          - /url: /dashboard/settings
+        - button "Sign out" [ref=e17]
+    - tablist [ref=e20]:
+      - tab "All" [selected] [ref=e21]
+      - tab "Pending" [ref=e22]
+      - tab "Confirmed" [ref=e23]
+      - tab "Preparing" [ref=e24]
+      - tab "Ready" [ref=e25]
+      - tab "Delivered" [ref=e26]
+      - tab "Completed" [ref=e27]
+    - main [ref=e28]:
+      - paragraph [ref=e29]: Loading orders…
+  - button "Open Next.js Dev Tools" [ref=e35] [cursor=pointer]:
+    - img [ref=e36]

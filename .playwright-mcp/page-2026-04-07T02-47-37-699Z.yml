@@ -1,0 +1,37 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e5]:
+        - heading "Settings" [level=1] [ref=e6]
+        - paragraph [ref=e7]: Passcode and menu management
+      - generic [ref=e8]:
+        - link "Back to orders" [ref=e9] [cursor=pointer]:
+          - /url: /dashboard
+        - button "Sign out" [ref=e10]
+    - main [ref=e11]:
+      - generic [ref=e12]:
+        - generic [ref=e13]:
+          - generic [ref=e14]:
+            - generic [ref=e15]: Customer passcode
+            - paragraph [ref=e16]: Customers must enter this passcode to access the store. Rotate it any time without redeploying.
+          - generic [ref=e17]:
+            - generic [ref=e18]:
+              - generic [ref=e19]: Passcode
+              - textbox "Passcode" [disabled]:
+                - /placeholder: Loading…
+            - generic [ref=e20]:
+              - button "Save passcode" [disabled]
+        - generic [ref=e21]:
+          - generic [ref=e22]:
+            - generic [ref=e23]: Menu image
+            - paragraph [ref=e24]: The customer-facing menu PNG. Uploading a new image replaces the current one immediately for everyone.
+          - generic [ref=e25]:
+            - generic [ref=e27]: Current
+            - generic [ref=e30]:
+              - generic [ref=e31]: Upload new menu
+              - button "Upload new menu" [ref=e32]
+            - generic [ref=e33]:
+              - button "Save menu" [disabled]
+  - button "Open Next.js Dev Tools" [ref=e39] [cursor=pointer]:
+    - img [ref=e40]
+  - alert [ref=e43]

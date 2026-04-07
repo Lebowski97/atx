@@ -1,0 +1,25 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e40] [cursor=pointer]:
+    - generic [ref=e43]:
+      - text: Compiling
+      - generic [ref=e44]:
+        - generic [ref=e45]: .
+        - generic [ref=e46]: .
+        - generic [ref=e47]: .
+  - alert [ref=e39]
+  - generic [ref=e49]:
+    - img "Tiny Trees ATX logo" [ref=e51]
+    - img [ref=e53]
+    - generic [ref=e56]:
+      - heading "Thank You!" [level=1] [ref=e57]
+      - paragraph [ref=e58]: Your order has been received successfully.
+      - paragraph [ref=e59]: We'll be in touch soon with updates on your order.
+    - generic [ref=e60]:
+      - paragraph [ref=e61]: Have questions or concerns?
+      - generic [ref=e62]:
+        - paragraph [ref=e63]: "Text us on SIGNAL:"
+        - img [ref=e64]
+        - paragraph [ref=e66]: tinytreesatx.89
+    - link "Back to Menu" [ref=e68] [cursor=pointer]:
+      - /url: /menu
+      - button "Back to Menu" [ref=e69]

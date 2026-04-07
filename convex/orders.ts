@@ -1,6 +1,32 @@
-import { query, mutation } from "./_generated/server";
+import { query, mutation, QueryCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
+
+export const ORDER_STATUSES = [
+  "pending",
+  "confirmed",
+  "preparing",
+  "ready",
+  "delivered",
+  "completed",
+] as const;
+
+const orderStatusValidator = v.union(
+  v.literal("pending"),
+  v.literal("confirmed"),
+  v.literal("preparing"),
+  v.literal("ready"),
+  v.literal("delivered"),
+  v.literal("completed"),
+);
+
+async function requireAdmin(ctx: QueryCtx) {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) {
+    throw new Error("Not authenticated");
+  }
+  return identity;
+}
 
 export const list = query({
   args: {},
@@ -10,6 +36,42 @@ export const list = query({
       .withIndex("by_createdAt")
       .order("desc")
       .take(50);
+  },
+});
+
+export const listOrders = query({
+  args: {
+    status: v.optional(orderStatusValidator),
+  },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+
+    if (args.status !== undefined) {
+      const status = args.status;
+      return await ctx.db
+        .query("orders")
+        .withIndex("by_status", (q) => q.eq("status", status))
+        .order("desc")
+        .take(200);
+    }
+
+    return await ctx.db
+      .query("orders")
+      .withIndex("by_createdAt")
+      .order("desc")
+      .take(200);
+  },
+});
+
+export const updateOrderStatus = mutation({
+  args: {
+    orderId: v.id("orders"),
+    status: orderStatusValidator,
+  },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    await ctx.db.patch(args.orderId, { status: args.status });
+    return null;
   },
 });
 

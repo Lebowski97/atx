@@ -1,0 +1,15 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e22] [cursor=pointer]:
+    - img [ref=e23]
+  - alert [ref=e26]
+  - generic [ref=e27]:
+    - generic [ref=e28]:
+      - generic [ref=e29]:
+        - paragraph [ref=e30]: "[Open Monday - Sunday]"
+        - paragraph [ref=e31]: Deliveries by appointment
+        - paragraph [ref=e32]: "*6pm cutoff for same day delivery*"
+        - paragraph [ref=e33]: $50 minimum order
+        - paragraph [ref=e34]: "-CASH PREFERRED-"
+      - link "Place Order" [ref=e36] [cursor=pointer]:
+        - /url: /order
+    - img "Tiny Trees ATX Menu" [ref=e39]

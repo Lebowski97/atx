@@ -1,0 +1,13 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - img "Tiny Trees ATX" [ref=e6]
+    - heading "Welcome!" [level=1] [ref=e7]
+  - generic [ref=e8]:
+    - generic [ref=e9]:
+      - text: Enter Passcode
+      - generic [ref=e10]:
+        - textbox "Enter Passcode" [active] [ref=e11]:
+          - /placeholder: ••••••
+        - button [ref=e12]:
+          - img [ref=e13]
+    - button "Enter" [ref=e16]
