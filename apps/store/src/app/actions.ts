@@ -2,10 +2,14 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { ConvexHttpClient } from "convex/browser";
+import { fetchQuery } from "convex/nextjs";
 import { api } from "../../../../convex/_generated/api";
-
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+import { getStorefrontServerSecret } from "../lib/storefront-server";
+import {
+  STOREFRONT_SESSION_COOKIE_NAME,
+  STOREFRONT_SESSION_MAX_AGE_SECONDS,
+  createStorefrontSessionToken,
+} from "../lib/storefront-session";
 
 export async function validateAndSetCookie(
   _prevState: { error: string } | null,
@@ -17,8 +21,9 @@ export async function validateAndSetCookie(
     return { error: "Please enter a passcode." };
   }
 
-  const isValid = await convex.query(api.settings.validatePasscode, {
+  const isValid = await fetchQuery(api.settings.validatePasscode, {
     passcode: passcode.trim(),
+    storefrontSecret: getStorefrontServerSecret(),
   });
 
   if (!isValid) {
@@ -26,13 +31,17 @@ export async function validateAndSetCookie(
   }
 
   const cookieStore = await cookies();
-  cookieStore.set("tt-session", "authenticated", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24, // 24 hours
-  });
+  cookieStore.set(
+    STOREFRONT_SESSION_COOKIE_NAME,
+    await createStorefrontSessionToken(),
+    {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: STOREFRONT_SESSION_MAX_AGE_SECONDS,
+    },
+  );
 
   redirect("/menu");
 }

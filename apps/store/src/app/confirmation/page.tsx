@@ -7,7 +7,6 @@ export default function ConfirmationPage() {
   return (
     <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-8">
       <div className="w-full max-w-md space-y-8 text-center">
-        {/* Logo */}
         <div className="flex justify-center">
           <Image
             src="/name_logo.png"
@@ -18,12 +17,10 @@ export default function ConfirmationPage() {
           />
         </div>
 
-        {/* Success Icon */}
         <div className="flex justify-center">
-          <CheckCircle className="w-16 h-16 text-green-400" />
+          <CheckCircle className="h-16 w-16 text-green-400" />
         </div>
 
-        {/* Thank You Message */}
         <div className="space-y-4">
           <h1 className="text-3xl font-light tracking-wide">Thank You!</h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
@@ -34,27 +31,25 @@ export default function ConfirmationPage() {
           </p>
         </div>
 
-        {/* Contact Information */}
-        <div className="space-y-4 pt-8 border-t border-border">
+        <div className="space-y-3 pt-8 border-t border-border">
           <p className="text-sm text-muted-foreground">
             Have questions or concerns?
           </p>
-          <div className="flex items-center justify-center space-x-2 text-foreground">
-            <p>Text us on SIGNAL:</p>
-            <MessageCircle className="w-4 h-4" />
-            <p className="hover:text-muted-foreground transition-colors underline">
+          <div className="flex items-center justify-center gap-2">
+            <span className="text-sm text-muted-foreground">
+              Text us on Signal
+            </span>
+            <MessageCircle className="h-4 w-4 text-foreground" />
+            <span className="text-base font-bold text-foreground">
               tinytreesatx.89
-            </p>
+            </span>
           </div>
         </div>
 
-        {/* Back to Menu Button */}
         <div className="pt-8">
-          <Link href="/menu">
-            <Button variant="secondary" className="font-medium px-8 py-3">
-              Back to Menu
-            </Button>
-          </Link>
+          <Button variant="secondary" className="font-medium px-8 py-3" asChild>
+            <Link href="/menu">Back to Menu</Link>
+          </Button>
         </div>
       </div>
     </div>

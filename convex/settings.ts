@@ -1,17 +1,11 @@
-import { query, mutation, QueryCtx } from "./_generated/server";
+import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-
-async function requireAdmin(ctx: QueryCtx) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) {
-    throw new Error("Not authenticated");
-  }
-  return identity;
-}
+import { requireAdmin, requireStorefrontServerSecret } from "./access";
 
 export const get = query({
   args: { key: v.string() },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     const setting = await ctx.db
       .query("settings")
       .withIndex("by_key", (q) => q.eq("key", args.key))
@@ -21,8 +15,9 @@ export const get = query({
 });
 
 export const validatePasscode = query({
-  args: { passcode: v.string() },
+  args: { passcode: v.string(), storefrontSecret: v.string() },
   handler: async (ctx, args) => {
+    requireStorefrontServerSecret(args.storefrontSecret);
     const setting = await ctx.db
       .query("settings")
       .withIndex("by_key", (q) => q.eq("key", "passcode"))
@@ -35,6 +30,7 @@ export const validatePasscode = query({
 export const set = mutation({
   args: { key: v.string(), value: v.string() },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx);
     const existing = await ctx.db
       .query("settings")
       .withIndex("by_key", (q) => q.eq("key", args.key))
@@ -75,6 +71,47 @@ export const updatePasscode = mutation({
       await ctx.db.patch(existing._id, { value });
     } else {
       await ctx.db.insert("settings", { key: "passcode", value });
+    }
+    return null;
+  },
+});
+
+export const getStoreInfo = query({
+  args: {},
+  handler: async (ctx) => {
+    const setting = await ctx.db
+      .query("settings")
+      .withIndex("by_key", (q) => q.eq("key", "storeInfo"))
+      .unique();
+    return setting?.value ?? null;
+  },
+});
+
+export const getStoreInfoAdmin = query({
+  args: {},
+  handler: async (ctx) => {
+    await requireAdmin(ctx);
+    const setting = await ctx.db
+      .query("settings")
+      .withIndex("by_key", (q) => q.eq("key", "storeInfo"))
+      .unique();
+    return setting?.value ?? null;
+  },
+});
+
+export const updateStoreInfo = mutation({
+  args: { storeInfo: v.string() },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    const value = args.storeInfo.trim();
+    const existing = await ctx.db
+      .query("settings")
+      .withIndex("by_key", (q) => q.eq("key", "storeInfo"))
+      .unique();
+    if (existing) {
+      await ctx.db.patch(existing._id, { value });
+    } else {
+      await ctx.db.insert("settings", { key: "storeInfo", value });
     }
     return null;
   },

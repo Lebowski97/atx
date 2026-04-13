@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useMutation } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -47,7 +45,6 @@ function validateForm(fields: {
 
 export default function OrderPage() {
   const router = useRouter();
-  const createOrder = useMutation(api.orders.createOrder);
 
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -72,18 +69,38 @@ export default function OrderPage() {
     setSubmitError("");
     setIsSubmitting(true);
     try {
-      await createOrder({
-        name: name.trim(),
-        phoneNumber: phoneNumber.trim(),
-        address: address.trim(),
-        items: items.trim(),
-        deliveryType: "delivery",
-        deliveryTime: deliveryTime.trim(),
-        notes: notes.trim() || undefined,
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name.trim(),
+          phoneNumber: phoneNumber.trim(),
+          address: address.trim(),
+          items: items.trim(),
+          deliveryType: "delivery",
+          deliveryTime: deliveryTime.trim(),
+          notes: notes.trim() || undefined,
+        }),
       });
+      if (response.status === 401) {
+        router.push("/");
+        return;
+      }
+      if (!response.ok) {
+        const body = (await response.json().catch(() => null)) as
+          | { error?: string }
+          | null;
+        throw new Error(body?.error ?? "Something went wrong. Please try again.");
+      }
       router.push("/confirmation");
-    } catch {
-      setSubmitError("Something went wrong. Please try again.");
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again.",
+      );
       setIsSubmitting(false);
     }
   }

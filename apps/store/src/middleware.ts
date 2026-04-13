@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import {
+  STOREFRONT_SESSION_COOKIE_NAME,
+  verifyStorefrontSessionToken,
+} from "./lib/storefront-session";
 
 const protectedPaths = ["/menu", "/order", "/confirmation"];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isProtected = protectedPaths.some(
@@ -14,10 +18,12 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const session = request.cookies.get("tt-session");
+  const session = request.cookies.get(STOREFRONT_SESSION_COOKIE_NAME);
 
-  if (!session || session.value !== "authenticated") {
-    return NextResponse.redirect(new URL("/", request.url));
+  if (!(await verifyStorefrontSessionToken(session?.value))) {
+    const response = NextResponse.redirect(new URL("/", request.url));
+    response.cookies.delete(STOREFRONT_SESSION_COOKIE_NAME);
+    return response;
   }
 
   return NextResponse.next();

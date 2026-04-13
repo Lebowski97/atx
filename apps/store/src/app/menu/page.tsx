@@ -8,28 +8,33 @@ import { Button } from "@/components/ui/button";
 
 export default function MenuPage() {
   const menuImageUrl = useQuery(api.files.getMenuImageUrl);
+  const storeInfo = useQuery(api.settings.getStoreInfo);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col items-center p-4 md:p-8">
-      {/* Header info section */}
-      <div className="w-full max-w-md text-center space-y-3 mt-4 mb-8">
-        <div className="bg-card rounded-lg p-4 space-y-2 text-sm">
-          <p className="font-semibold">[Open Monday - Sunday]</p>
-          <p>Deliveries by appointment</p>
-          <p className="font-semibold">
-            *6pm cutoff for same day delivery*
-          </p>
-          <p>$50 minimum order</p>
-          <p className="font-semibold">-CASH PREFERRED-</p>
+    <div className="min-h-screen bg-background text-foreground flex flex-col items-center p-4 pb-12 md:p-8 md:pb-12">
+      <div className="w-full max-w-md text-center space-y-4 mt-4 mb-8">
+        <div className="flex justify-center">
+          <Image
+            src="/name_logo.png"
+            alt="Tiny Trees ATX"
+            width={100}
+            height={100}
+            priority
+            className="drop-shadow-lg"
+          />
         </div>
-        <div className="rounded-lg p-4 space-y-2 text-sm">
-          <Button size="lg" asChild className="w-full font-semibold text-lg">
-            <Link href="/order">Place Order</Link>
-          </Button>
-        </div>
+
+        {storeInfo !== undefined && storeInfo && (
+          <div className="bg-card rounded-lg p-4 text-sm whitespace-pre-line leading-relaxed">
+            {storeInfo}
+          </div>
+        )}
+
+        <Button size="lg" asChild className="w-full font-semibold text-lg">
+          <Link href="/order">Place Order</Link>
+        </Button>
       </div>
 
-      {/* Menu image section */}
       <div className="w-full max-w-4xl flex justify-center">
         <div className="relative w-full max-w-3xl">
           {menuImageUrl === undefined ? (
@@ -52,7 +57,6 @@ export default function MenuPage() {
           )}
         </div>
       </div>
-      <div className="mt-8" />
     </div>
   );
 }

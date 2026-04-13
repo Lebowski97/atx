@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function SettingsPage() {
   return (
@@ -25,7 +26,7 @@ export default function SettingsPage() {
           <div>
             <h1 className="text-lg font-semibold tracking-tight">Settings</h1>
             <p className="text-xs text-muted-foreground">
-              Passcode and menu management
+              Store configuration and menu management
             </p>
           </div>
         </div>
@@ -44,6 +45,7 @@ export default function SettingsPage() {
       <main className="flex-1 px-4 py-6 sm:px-6">
         <div className="mx-auto flex max-w-3xl flex-col gap-6">
           <PasscodeCard />
+          <StoreInfoCard />
           <MenuCard />
         </div>
       </main>
@@ -123,6 +125,82 @@ function PasscodeCard() {
             disabled={!dirty || status.kind === "saving"}
           >
             {status.kind === "saving" ? "Saving…" : "Save passcode"}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function StoreInfoCard() {
+  const currentStoreInfo = useQuery(api.settings.getStoreInfoAdmin, {});
+  const updateStoreInfo = useMutation(api.settings.updateStoreInfo);
+
+  const [draft, setDraft] = useState("");
+  const [status, setStatus] = useState<
+    { kind: "idle" } | { kind: "saving" } | { kind: "saved" } | { kind: "error"; message: string }
+  >({ kind: "idle" });
+
+  useEffect(() => {
+    if (currentStoreInfo !== undefined && currentStoreInfo !== null) {
+      setDraft(currentStoreInfo);
+    }
+  }, [currentStoreInfo]);
+
+  const dirty =
+    currentStoreInfo !== undefined &&
+    draft !== (currentStoreInfo ?? "");
+
+  async function handleSave() {
+    setStatus({ kind: "saving" });
+    try {
+      await updateStoreInfo({ storeInfo: draft });
+      setStatus({ kind: "saved" });
+      setTimeout(
+        () => setStatus((s) => (s.kind === "saved" ? { kind: "idle" } : s)),
+        2000,
+      );
+    } catch (err) {
+      setStatus({
+        kind: "error",
+        message: err instanceof Error ? err.message : "Failed to update store info",
+      });
+    }
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Store info heading</CardTitle>
+        <p className="text-xs text-muted-foreground">
+          Shown above the menu on the customer-facing store. Use this for hours,
+          delivery rules, minimums, etc. Leave blank to hide entirely.
+        </p>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="store-info">Info text</Label>
+          <Textarea
+            id="store-info"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            placeholder={
+              currentStoreInfo === undefined
+                ? "Loading…"
+                : "e.g. Open Monday - Sunday\nDeliveries by appointment\n$50 minimum order"
+            }
+            disabled={currentStoreInfo === undefined}
+            rows={5}
+            className="min-h-28"
+          />
+        </div>
+        <div className="flex items-center justify-between gap-3">
+          <StatusLine status={status} />
+          <Button
+            onClick={handleSave}
+            disabled={!dirty || status.kind === "saving"}
+          >
+            {status.kind === "saving" ? "Saving…" : "Save info"}
           </Button>
         </div>
       </CardContent>

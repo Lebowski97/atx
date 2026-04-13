@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { SignOutButton } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import type { Doc } from "../../../../../convex/_generated/dataModel";
+import { Check, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -61,25 +62,28 @@ type StatusFilter = "all" | OrderStatus;
 export default function DashboardPage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
-  const orders = useQuery(
-    api.orders.listOrders,
-    statusFilter === "all" ? {} : { status: statusFilter },
-  );
+  const allOrders = useQuery(api.orders.listOrders, {});
   const updateStatus = useMutation(api.orders.updateOrderStatus);
 
   const stats = useMemo(() => {
-    if (!orders) return { todayCount: 0, pendingCount: 0 };
+    if (!allOrders) return { todayCount: 0, pendingCount: 0 };
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);
     const startMs = startOfToday.getTime();
     let todayCount = 0;
     let pendingCount = 0;
-    for (const o of orders) {
+    for (const o of allOrders) {
       if (o.createdAt >= startMs) todayCount++;
       if (o.status === "pending") pendingCount++;
     }
     return { todayCount, pendingCount };
-  }, [orders]);
+  }, [allOrders]);
+
+  const filteredOrders = useMemo(() => {
+    if (!allOrders) return undefined;
+    if (statusFilter === "all") return allOrders;
+    return allOrders.filter((o) => o.status === statusFilter);
+  }, [allOrders, statusFilter]);
 
   return (
     <div className="flex flex-1 flex-col bg-background">
@@ -114,7 +118,7 @@ export default function DashboardPage() {
       </header>
 
       <div className="border-b border-border bg-card/20 px-4 py-3 sm:px-6">
-        <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+        <ScrollHintWrapper>
           <Tabs
             value={statusFilter}
             onValueChange={(v) => setStatusFilter(v as StatusFilter)}
@@ -128,13 +132,19 @@ export default function DashboardPage() {
               ))}
             </TabsList>
           </Tabs>
-        </div>
+        </ScrollHintWrapper>
       </div>
 
       <main className="flex-1 px-4 py-6 sm:px-6">
-        {orders === undefined ? (
-          <p className="text-sm text-muted-foreground">Loading orders…</p>
-        ) : orders.length === 0 ? (
+        {filteredOrders === undefined ? (
+          <ul className="mx-auto flex max-w-3xl flex-col gap-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <li key={i}>
+                <OrderCardSkeleton />
+              </li>
+            ))}
+          </ul>
+        ) : filteredOrders.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
             <p className="text-sm font-medium">No orders to show</p>
             <p className="text-xs text-muted-foreground">
@@ -145,7 +155,7 @@ export default function DashboardPage() {
           </div>
         ) : (
           <ul className="mx-auto flex max-w-3xl flex-col gap-3">
-            {orders.map((order) => (
+            {filteredOrders.map((order) => (
               <li key={order._id}>
                 <OrderCard
                   order={order}
@@ -162,6 +172,38 @@ export default function DashboardPage() {
   );
 }
 
+function ScrollHintWrapper({ children }: { children: React.ReactNode }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollRight(el.scrollWidth - el.scrollLeft - el.clientWidth > 1);
+  }, []);
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener("resize", checkScroll);
+    return () => window.removeEventListener("resize", checkScroll);
+  }, [checkScroll]);
+
+  return (
+    <div className="relative -mx-4 sm:mx-0">
+      <div
+        ref={scrollRef}
+        onScroll={checkScroll}
+        className="overflow-x-auto px-4 sm:px-0"
+      >
+        {children}
+      </div>
+      {canScrollRight && (
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background/80 to-transparent sm:hidden" />
+      )}
+    </div>
+  );
+}
+
 function StatChip({
   label,
   value,
@@ -172,8 +214,8 @@ function StatChip({
   accent?: boolean;
 }) {
   return (
-    <div className="flex items-baseline gap-1.5">
-      <span
+    <dl className="flex items-baseline gap-1.5">
+      <dd
         className={
           accent
             ? "text-lg font-semibold text-primary"
@@ -181,9 +223,42 @@ function StatChip({
         }
       >
         {value}
-      </span>
-      <span className="text-xs text-muted-foreground">{label}</span>
-    </div>
+      </dd>
+      <dt className="text-xs text-muted-foreground">{label}</dt>
+    </dl>
+  );
+}
+
+function OrderCardSkeleton() {
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex flex-col gap-2">
+            <div className="h-4 w-28 animate-pulse rounded bg-muted" />
+            <div className="h-3 w-20 animate-pulse rounded bg-muted" />
+          </div>
+          <div className="h-5 w-16 animate-pulse rounded-full bg-muted" />
+        </div>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
+        <div className="flex gap-3">
+          <div className="h-3 w-16 animate-pulse rounded bg-muted" />
+          <div className="h-3 w-24 animate-pulse rounded bg-muted" />
+          <div className="h-3 w-20 animate-pulse rounded bg-muted" />
+        </div>
+        <Separator />
+        <div className="flex flex-col gap-1.5">
+          <div className="h-3 w-full animate-pulse rounded bg-muted" />
+          <div className="h-3 w-3/4 animate-pulse rounded bg-muted" />
+        </div>
+        <Separator />
+        <div className="flex items-center justify-between">
+          <div className="h-3 w-20 animate-pulse rounded bg-muted" />
+          <div className="h-8 w-40 animate-pulse rounded bg-muted" />
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -195,6 +270,7 @@ function OrderCard({
   onStatusChange: (status: OrderStatus) => Promise<null> | void;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const [pendingStatus, setPendingStatus] = useState<OrderStatus | null>(null);
   const created = new Date(order.createdAt);
   const createdLabel = created.toLocaleString(undefined, {
     month: "short",
@@ -203,6 +279,21 @@ function OrderCard({
     minute: "2-digit",
   });
   const status = order.status as OrderStatus;
+
+  function handleSelectChange(value: string) {
+    const next = value as OrderStatus;
+    if (next === status) {
+      setPendingStatus(null);
+      return;
+    }
+    setPendingStatus(next);
+  }
+
+  async function confirmStatusChange() {
+    if (!pendingStatus) return;
+    await onStatusChange(pendingStatus);
+    setPendingStatus(null);
+  }
 
   return (
     <Card>
@@ -247,6 +338,7 @@ function OrderCard({
             <button
               type="button"
               onClick={() => setExpanded((v) => !v)}
+              aria-expanded={expanded}
               className="mt-1 text-xs text-primary underline-offset-4 hover:underline"
             >
               {expanded ? "Show less" : "Show more"}
@@ -276,21 +368,43 @@ function OrderCard({
 
         <div className="flex items-center justify-between gap-3">
           <span className="text-xs text-muted-foreground">Update status</span>
-          <Select
-            value={status}
-            onValueChange={(v) => void onStatusChange(v as OrderStatus)}
-          >
-            <SelectTrigger className="h-8 w-40">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {STATUSES.map((s) => (
-                <SelectItem key={s} value={s}>
-                  {STATUS_LABELS[s]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-2">
+            <Select
+              value={pendingStatus ?? status}
+              onValueChange={handleSelectChange}
+            >
+              <SelectTrigger className="h-8 w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {STATUSES.map((s) => (
+                  <SelectItem key={s} value={s}>
+                    {STATUS_LABELS[s]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {pendingStatus && (
+              <div className="flex items-center gap-1">
+                <Button
+                  size="icon"
+                  variant="default"
+                  className="h-8 w-8"
+                  onClick={confirmStatusChange}
+                >
+                  <Check className="h-4 w-4" />
+                </Button>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8"
+                  onClick={() => setPendingStatus(null)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>

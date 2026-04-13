@@ -1,6 +1,7 @@
-import { query, mutation, QueryCtx } from "./_generated/server";
+import { query, mutation } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
+import { requireAdmin, requireStorefrontServerSecret } from "./access";
 
 export const ORDER_STATUSES = [
   "pending",
@@ -20,17 +21,10 @@ const orderStatusValidator = v.union(
   v.literal("completed"),
 );
 
-async function requireAdmin(ctx: QueryCtx) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) {
-    throw new Error("Not authenticated");
-  }
-  return identity;
-}
-
 export const list = query({
   args: {},
   handler: async (ctx) => {
+    await requireAdmin(ctx);
     return await ctx.db
       .query("orders")
       .withIndex("by_createdAt")
@@ -83,11 +77,13 @@ export const createOrder = mutation({
     phoneNumber: v.string(),
     address: v.string(),
     items: v.string(),
+    storefrontSecret: v.string(),
     deliveryType: v.optional(v.string()),
     deliveryTime: v.string(),
     notes: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    requireStorefrontServerSecret(args.storefrontSecret);
     const deliveryType =
       args.deliveryType?.trim() || DEFAULT_DELIVERY_TYPE;
 

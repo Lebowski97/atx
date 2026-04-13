@@ -1,14 +1,7 @@
-import { query, mutation, QueryCtx } from "./_generated/server";
+import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
-
-async function requireAdmin(ctx: QueryCtx) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) {
-    throw new Error("Not authenticated");
-  }
-  return identity;
-}
+import { requireAdmin } from "./access";
 
 export const getMenuImageUrl = query({
   args: {},
