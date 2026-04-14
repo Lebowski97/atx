@@ -1,6 +1,9 @@
 {
   "name": "atx-v3",
   "private": true,
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
