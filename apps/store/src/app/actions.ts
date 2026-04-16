@@ -21,27 +21,35 @@ export async function validateAndSetCookie(
     return { error: "Please enter a passcode." };
   }
 
-  const isValid = await fetchQuery(api.settings.validatePasscode, {
-    passcode: passcode.trim(),
-    storefrontSecret: getStorefrontServerSecret(),
-  });
+  try {
+    const isValid = await fetchQuery(api.settings.validatePasscode, {
+      passcode: passcode.trim(),
+      storefrontSecret: getStorefrontServerSecret(),
+    });
 
-  if (!isValid) {
-    return { error: "Invalid passcode. Please try again." };
+    if (!isValid) {
+      return { error: "Invalid passcode. Please try again." };
+    }
+
+    const cookieStore = await cookies();
+    cookieStore.set(
+      STOREFRONT_SESSION_COOKIE_NAME,
+      await createStorefrontSessionToken(),
+      {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        maxAge: STOREFRONT_SESSION_MAX_AGE_SECONDS,
+      },
+    );
+  } catch (error) {
+    console.error("Storefront passcode validation failed", error);
+    return {
+      error:
+        "Store configuration is incomplete. Please contact support and try again soon.",
+    };
   }
-
-  const cookieStore = await cookies();
-  cookieStore.set(
-    STOREFRONT_SESSION_COOKIE_NAME,
-    await createStorefrontSessionToken(),
-    {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: STOREFRONT_SESSION_MAX_AGE_SECONDS,
-    },
-  );
 
   redirect("/menu");
 }

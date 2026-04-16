@@ -35,8 +35,15 @@ function readOptionalString(value: unknown) {
 export async function POST(request: NextRequest) {
   const sessionToken =
     request.cookies.get(STOREFRONT_SESSION_COOKIE_NAME)?.value;
+  let hasValidSession = false;
 
-  if (!(await verifyStorefrontSessionToken(sessionToken))) {
+  try {
+    hasValidSession = await verifyStorefrontSessionToken(sessionToken);
+  } catch (error) {
+    console.error("Storefront session verification failed", error);
+  }
+
+  if (!hasValidSession) {
     const response = NextResponse.json(
       { error: "Your store session has expired. Please enter the passcode again." },
       { status: 401 },

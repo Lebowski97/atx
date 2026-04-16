@@ -19,8 +19,15 @@ export async function middleware(request: NextRequest) {
   }
 
   const session = request.cookies.get(STOREFRONT_SESSION_COOKIE_NAME);
+  let isValidSession = false;
 
-  if (!(await verifyStorefrontSessionToken(session?.value))) {
+  try {
+    isValidSession = await verifyStorefrontSessionToken(session?.value);
+  } catch (error) {
+    console.error("Storefront session validation failed", error);
+  }
+
+  if (!isValidSession) {
     const response = NextResponse.redirect(new URL("/", request.url));
     response.cookies.delete(STOREFRONT_SESSION_COOKIE_NAME);
     return response;
