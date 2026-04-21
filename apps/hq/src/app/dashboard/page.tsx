@@ -62,6 +62,14 @@ type StatusFilter = "all" | OrderStatus;
 export default function DashboardPage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
+  // DEBUG: temporary identity inspection — remove after fixing auth
+  const whoami = useQuery(api.debug.whoami);
+  useEffect(() => {
+    if (whoami !== undefined) {
+      console.log("[DEBUG whoami]", JSON.stringify(whoami, null, 2));
+    }
+  }, [whoami]);
+
   const allOrders = useQuery(api.orders.listOrders, {});
   const updateStatus = useMutation(api.orders.updateOrderStatus);
 

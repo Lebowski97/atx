@@ -9,6 +9,7 @@
  */
 
 import type * as access from "../access.js";
+import type * as debug from "../debug.js";
 import type * as email from "../email.js";
 import type * as files from "../files.js";
 import type * as orders from "../orders.js";
@@ -22,6 +23,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   access: typeof access;
+  debug: typeof debug;
   email: typeof email;
   files: typeof files;
   orders: typeof orders;
