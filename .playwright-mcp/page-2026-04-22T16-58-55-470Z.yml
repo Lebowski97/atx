@@ -1,0 +1,91 @@
+- generic [ref=e1]:
+  - generic [active]:
+    - generic [ref=e117]:
+      - generic [ref=e118]:
+        - generic [ref=e119]:
+          - navigation [ref=e120]:
+            - button "previous" [disabled] [ref=e121]:
+              - img "previous" [ref=e122]
+            - generic [ref=e124]:
+              - generic [ref=e125]: 1/
+              - text: "2"
+            - button "next" [ref=e126] [cursor=pointer]:
+              - img "next" [ref=e127]
+          - img
+        - generic [ref=e129]:
+          - link "Next.js 16.2.2 (stale) Turbopack" [ref=e130] [cursor=pointer]:
+            - /url: https://nextjs.org/docs/messages/version-staleness
+            - img [ref=e131]
+            - generic "There is a newer version (16.2.4) available, upgrade recommended!" [ref=e133]: Next.js 16.2.2 (stale)
+            - generic [ref=e134]: Turbopack
+          - img
+      - dialog "Runtime Error" [ref=e136]:
+        - generic [ref=e139]:
+          - generic [ref=e140]:
+            - generic [ref=e141]:
+              - generic [ref=e143]: Runtime Error
+              - generic [ref=e144]:
+                - button "Copy Error Info" [ref=e145] [cursor=pointer]:
+                  - img [ref=e146]
+                - button "No related documentation found" [disabled] [ref=e148]:
+                  - img [ref=e149]
+                - button "Attach Node.js inspector" [ref=e151] [cursor=pointer]:
+                  - img [ref=e152]
+            - generic [ref=e161]: "[CONVEX Q(orders:listOrders)] [Request ID: ea345c85ee82159c] Server Error Called by client"
+          - generic [ref=e162]:
+            - generic [ref=e163]:
+              - paragraph [ref=e165]:
+                - img [ref=e167]
+                - generic [ref=e170]: src/components/order-table.tsx (99:29) @ OrderTable
+                - button "Open in editor" [ref=e171] [cursor=pointer]:
+                  - img [ref=e173]
+              - generic [ref=e176]:
+                - generic [ref=e177]: 97 | const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+                - generic [ref=e178]: 98 |
+                - generic [ref=e179]: "> 99 | const allOrders = useQuery(api.orders.listOrders, {});"
+                - generic [ref=e180]: "| ^"
+                - generic [ref=e181]: 100 | const filteredOrders = useQuery(
+                - generic [ref=e182]: 101 | api.orders.listOrders,
+                - generic [ref=e183]: "102 | statusFilter === \"all\" ? \"skip\" : { status: statusFilter },"
+            - generic [ref=e184]:
+              - generic [ref=e185]:
+                - paragraph [ref=e186]:
+                  - text: Call Stack
+                  - generic [ref=e187]: "29"
+                - button "Show 27 ignore-listed frame(s)" [ref=e188] [cursor=pointer]:
+                  - text: Show 27 ignore-listed frame(s)
+                  - img [ref=e189]
+              - generic [ref=e191]:
+                - generic [ref=e192]:
+                  - text: OrderTable
+                  - button "Open OrderTable in editor" [ref=e193] [cursor=pointer]:
+                    - img [ref=e194]
+                - text: src/components/order-table.tsx (99:29)
+              - generic [ref=e196]:
+                - generic [ref=e197]:
+                  - text: DashboardPage
+                  - button "Open DashboardPage in editor" [ref=e198] [cursor=pointer]:
+                    - img [ref=e199]
+                - text: src/app/dashboard/page.tsx (6:10)
+        - generic [ref=e201]: "1"
+        - generic [ref=e202]: "2"
+    - generic [ref=e95] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=e96]:
+        - img [ref=e97]
+      - generic [ref=e105]:
+        - button "Open issues overlay" [ref=e106]:
+          - generic [ref=e203]:
+            - generic [ref=e204]: "1"
+            - generic [ref=e205]: "2"
+          - generic [ref=e110]:
+            - text: Issue
+            - generic [ref=e206]: s
+        - button "Collapse issues badge" [ref=e111]:
+          - img [ref=e112]
+  - generic [ref=e208]:
+    - img [ref=e209]
+    - heading "This page couldn’t load" [level=1] [ref=e211]
+    - paragraph [ref=e212]: Reload to try again, or go back.
+    - generic [ref=e213]:
+      - button "Reload" [ref=e215] [cursor=pointer]
+      - button "Back" [ref=e216] [cursor=pointer]

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { SignIn } from "@clerk/nextjs";
 import { Authenticated, Unauthenticated, AuthLoading } from "convex/react";
 import { useRouter } from "next/navigation";
@@ -10,7 +11,7 @@ export default function Home() {
     <>
       <AuthLoading>
         <div className="flex flex-1 items-center justify-center">
-          <p className="text-sm text-muted-foreground">Loading…</p>
+          <p className="text-sm text-muted-foreground">Loading...</p>
         </div>
       </AuthLoading>
       <Authenticated>
@@ -18,9 +19,17 @@ export default function Home() {
       </Authenticated>
       <Unauthenticated>
         <div className="flex flex-1 items-center justify-center px-4 py-8">
-          <div className="w-full max-w-sm space-y-4">
-            <div className="text-center">
-              <h1 className="text-xl font-semibold">Tiny Trees HQ</h1>
+          <div className="w-full max-w-sm space-y-6">
+            <div className="flex flex-col items-center gap-3">
+              <Image
+                src="/name_logo.png"
+                alt="Tiny Trees"
+                width={140}
+                height={40}
+                className="drop-shadow-lg"
+                style={{ height: "2.5rem", width: "auto" }}
+                priority
+              />
               <p className="text-sm text-muted-foreground">Admin sign in</p>
             </div>
             <SignIn

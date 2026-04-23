@@ -1,0 +1,33 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - img "Tiny Trees" [ref=e5]
+      - generic [ref=e6]:
+        - button [ref=e7]:
+          - img
+        - button "Sign out" [ref=e8]
+    - generic [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - definition [ref=e12]: "0"
+          - term [ref=e13]: Today
+        - generic [ref=e14]:
+          - definition [ref=e15]: "0"
+          - term [ref=e16]: Pending
+        - generic [ref=e17]:
+          - definition [ref=e18]: "0"
+          - term [ref=e19]: Preparing
+        - generic [ref=e20]:
+          - definition [ref=e21]: "0"
+          - term [ref=e22]: Ready
+      - tablist [ref=e27]:
+        - tab "All" [selected] [ref=e28]
+        - tab "Pending" [ref=e29]
+        - tab "Confirmed" [ref=e30]
+        - tab "Preparing" [ref=e31]
+        - tab "Ready" [ref=e32]
+        - tab "Delivered" [ref=e33]
+        - tab "Completed" [ref=e34]
+      - main [ref=e35]
+  - button "Open Next.js Dev Tools" [ref=e96] [cursor=pointer]:
+    - img [ref=e97]

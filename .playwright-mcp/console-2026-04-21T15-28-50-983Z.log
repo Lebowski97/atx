@@ -1,0 +1,32 @@
+[     957ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3001/_next/static/chunks/0r_m_next_dist_13~aa_a._.js:2431
+[    1034ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/0r_m_next_dist_13~aa_a._.js:2431
+[    1267ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3001/_next/static/chunks/0r_m_next_dist_13~aa_a._.js:2431
+[    2065ms] Error: [CONVEX Q(orders:listOrders)] [Request ID: 7a468442e38868d1] Server Error
+  Called by client
+    at OptimisticQueryResults.queryResult (http://localhost:3001/_next/static/chunks/045c_convex_dist_esm_0-mau54._.js:2697:19)
+    at BaseConvexClient.localQueryResult (http://localhost:3001/_next/static/chunks/045c_convex_dist_esm_0-mau54._.js:4546:44)
+    at Object.localQueryResult (http://localhost:3001/_next/static/chunks/045c_convex_dist_esm_0-mau54._.js:6301:44)
+    at QueriesObserver.getLocalResults (http://localhost:3001/_next/static/chunks/045c_convex_dist_esm_0-mau54._.js:6678:31)
+    at useQueriesHelper.useMemo[subscription] (http://localhost:3001/_next/static/chunks/045c_convex_dist_esm_0-mau54._.js:6810:41)
+    at useSubscription.useEffect.checkForUpdates (http://localhost:3001/_next/static/chunks/045c_convex_dist_esm_0-mau54._.js:6050:43)
+    at basicStateReducer (http://localhost:3001/_next/static/chunks/0r_m_next_dist_compiled_react-dom_0i43cm-._.js:4797:47)
+    at updateReducerImpl (http://localhost:3001/_next/static/chunks/0r_m_next_dist_compiled_react-dom_0i43cm-._.js:4879:79)
+    at updateReducer (http://localhost:3001/_next/static/chunks/0r_m_next_dist_compiled_react-dom_0i43cm-._.js:4829:16)
+    at Object.useState (http://localhost:3001/_next/static/chunks/0r_m_next_dist_compiled_react-dom_0i43cm-._.js:15492:24)
+    at exports.useState (http://localhost:3001/_next/static/chunks/0r_m_next_dist_compiled_0zagswi._.js:1754:36)
+    at useSubscription (http://localhost:3001/_next/static/chunks/045c_convex_dist_esm_0-mau54._.js:6021:366)
+    at useQueriesHelper (http://localhost:3001/_next/static/chunks/045c_convex_dist_esm_0-mau54._.js:6824:275)
+    at useQueries (http://localhost:3001/_next/static/chunks/045c_convex_dist_esm_0-mau54._.js:6790:12)
+    at useQuery (http://localhost:3001/_next/static/chunks/045c_convex_dist_esm_0-mau54._.js:6538:274)
+    at DashboardPage (http://localhost:3001/_next/static/chunks/_03j1mkb._.js:758:269)
+    at Object.react_stack_bottom_frame (http://localhost:3001/_next/static/chunks/0r_m_next_dist_compiled_react-dom_0i43cm-._.js:15037:24)
+    at renderWithHooks (http://localhost:3001/_next/static/chunks/0r_m_next_dist_compiled_react-dom_0i43cm-._.js:4620:24)
+    at updateFunctionComponent (http://localhost:3001/_next/static/chunks/0r_m_next_dist_compiled_react-dom_0i43cm-._.js:6081:21)
+    at beginWork (http://localhost:3001/_next/static/chunks/0r_m_next_dist_compiled_react-dom_0i43cm-._.js:6691:24)
+    at runWithFiberInDEV (http://localhost:3001/_next/static/chunks/0r_m_next_dist_compiled_react-dom_0i43cm-._.js:965:74)
+    at performUnitOfWork (http://localhost:3001/_next/static/chunks/0r_m_next_dist_compiled_react-dom_0i43cm-._.js:9555:97)
+    at workLoopSync (http://localhost:3001/_next/static/chunks/0r_m_next_dist_compiled_react-dom_0i43cm-._.js:9449:40)
+    at renderRootSync (http://localhost:3001/_next/static/chunks/0r_m_next_dist_compiled_react-dom_0i43cm-._.js:9433:13)
+    at performWorkOnRoot (http://localhost:3001/_next/static/chunks/0r_m_next_dist_compiled_react-dom_0i43cm-._.js:9098:47)
+    at performWorkOnRootViaSchedulerTask (http://localhost:3001/_next/static/chunks/0r_m_next_dist_compiled_react-dom_0i43cm-._.js:10255:9)
+    at MessagePort.performWorkUntilDeadline (http://localhost:3001/_next/static/chunks/0r_m_next_dist_compiled_0zagswi._.js:2647:64)
