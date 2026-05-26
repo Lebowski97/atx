@@ -22,23 +22,32 @@ export function MenuUpload() {
   const setMenuImage = useMutation(api.files.setMenuImage);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const previewUrlRef = useRef<string | null>(null);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [status, setStatus] = useState<SaveStatus>({ kind: "idle" });
 
   useEffect(() => {
-    if (!pendingFile) {
-      setPreviewUrl(null);
-      return;
+    return () => {
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+      }
+    };
+  }, []);
+
+  function setPendingMenuFile(file: File | null) {
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
     }
-    const url = URL.createObjectURL(pendingFile);
-    setPreviewUrl(url);
-    return () => URL.revokeObjectURL(url);
-  }, [pendingFile]);
+    const nextPreviewUrl = file ? URL.createObjectURL(file) : null;
+    previewUrlRef.current = nextPreviewUrl;
+    setPendingFile(file);
+    setPreviewUrl(nextPreviewUrl);
+  }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0] ?? null;
-    setPendingFile(file);
+    setPendingMenuFile(file);
     setStatus({ kind: "idle" });
   }
 
@@ -59,7 +68,7 @@ export function MenuUpload() {
         storageId: Id<"_storage">;
       };
       await setMenuImage({ storageId });
-      setPendingFile(null);
+      setPendingMenuFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
       setStatus({ kind: "saved" });
       setTimeout(
